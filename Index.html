@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Device Lab Pro</title>
+
+<style>
+body {
+  margin:0;
+  background:#000;
+  color:#fff;
+  font-family:-apple-system;
+}
+
+.container {
+  max-width:650px;
+  margin:auto;
+  padding:20px;
+}
+
+.card {
+  background:#111;
+  padding:20px;
+  border-radius:20px;
+  margin-bottom:20px;
+}
+
+.label {
+  color:#777;
+  font-size:12px;
+  margin-bottom:2px;
+}
+
+.value {
+  font-size:18px;
+  margin-bottom:12px;
+}
+
+canvas { width:100%; height:120px; }
+
+.test { height:60px; position:relative; overflow:hidden; }
+.bar { position:absolute; width:50px; height:100%; background:#fff; }
+
+.subpixel {
+  height:40px;
+  background:linear-gradient(90deg, red, green, blue);
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="card">
+<h2>Display</h2>
+
+<div class="label">Resolution</div>
+<div class="value" id="res"></div>
+
+<div class="label">Refresh Rate</div>
+<div class="value" id="hz"></div>
+
+<div class="label">VRR / Sync</div>
+<div class="value" id="vrr">Detecting…</div>
+</div>
+
+<div class="card">
+<h2>Performance</h2>
+
+<div class="label">Frame Time</div>
+<div class="value" id="framems"></div>
+
+<canvas id="graph"></canvas>
+
+<div class="label">Real FPS (GPU bound)</div>
+<div class="value" id="realfps"></div>
+</div>
+
+<div class="card">
+<h2>Input</h2>
+
+<div class="label">Mouse Polling Rate</div>
+<div class="value" id="poll">No input device detected</div>
+
+<div class="label">Touch Sampling Rate</div>
+<div class="value" id="touch">–</div>
+
+<div class="label">Input Lag</div>
+<div class="value" id="inputlag">Tap to test input lag</div>
+</div>
+
+<div class="card">
+<h2>Motion Tests</h2>
+<div class="test" id="pixel"></div>
+<div class="test" id="variable"></div>
+<div class="test" id="overdrive"></div>
+<div class="subpixel"></div>
+</div>
+
+<div class="card">
+<h2>GPU Shader Benchmark</h2>
+<div class="value" id="shaderScore">Running…</div>
+</div>
+
+<div class="card">
+<h2>CPU Benchmark (Multi-thread)</h2>
+<div class="value" id="cpuScore">Running…</div>
+</div>
+
+<div class="card">
+<h2>WebGPU Benchmark</h2>
+<div class="value" id="webgpu">Checking…</div>
+</div>
+
+<div class="card">
+<h2>Device Parser</h2>
+<div class="label">User Agent</div>
+<div class="value" id="ua"></div>
+
+<div class="label">Platform</div>
+<div class="value" id="platform"></div>
+
+<div class="label">Device Class</div>
+<div class="value" id="deviceClass"></div>
+
+<div class="label">Hardware Threads</div>
+<div class="value" id="threads"></div>
+</div>
+
+<div class="card">
+<h2>Device Score</h2>
+<div class="value" id="fingerprint"></div>
+</div>
+
+</div>
+
+<script>
+
+// ---------------- DISPLAY ----------------
+res.textContent = screen.width + " x " + screen.height;
+
+
+// ---------------- REFRESH RATE ----------------
+let f=0,l=performance.now();
+function hzLoop(t){
+ f++;
+ if(t-l>=1000){
+  hz.textContent=f+" Hz";
+  f=0;l=t;
+ }
+ requestAnimationFrame(hzLoop);
+}
+requestAnimationFrame(hzLoop);
+
+
+// ---------------- VRR DETECTION (heuristic) ----------------
+function detectVRR(){
+  let rate = window.screen?.refreshRate || null;
+
+  // real API not available → heuristic fallback
+  let supported =
+    window.matchMedia("(dynamic-range: high)").matches ||
+    window.matchMedia("(min-refresh-rate: 120hz)").matches;
+
+  if(navigator.userAgent.includes("Windows")){
+    vrr.textContent = "Likely G-Sync / FreeSync (heuristic)";
+  } else if(navigator.userAgent.includes("Mac")){
+    vrr.textContent = "ProMotion (if supported display)";
+  } else {
+    vrr.textContent = "Unknown / Fixed Refresh";
+  }
+}
+detectVRR();
+
+
+// ---------------- FRAME TIME ----------------
+let ctx=graph.getContext("2d");
+let times=[], last=performance.now();
+
+function frame(now){
+ let dt=now-last;
+ last=now;
+
+ framems.textContent = dt.toFixed(2)+" ms";
+
+ times.push(dt);
+ if(times.length>120) times.shift();
+
+ ctx.clearRect(0,0,graph.width,graph.height);
+
+ times.forEach((t,i)=>{
+   ctx.fillStyle="#fff";
+   ctx.fillRect(i*3,120-t*2,2,t*2);
+ });
+
+ requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+
+// ---------------- REAL GPU FPS ----------------
+let rf=0,rs=performance.now();
+function gpu(){
+ for(let i=0;i<1500;i++){ Math.sqrt(i*i); }
+ rf++;
+
+ if(performance.now()-rs>=1000){
+  realfps.textContent=rf+" FPS";
+  rf=0;rs=performance.now();
+ }
+
+ setTimeout(gpu,0);
+}
+gpu();
+
+
+// ---------------- INPUT ----------------
+let lastMove=0,det=false;
+window.addEventListener("mousemove",e=>{
+ det=true;
+ let n=performance.now();
+ if(lastMove){
+  poll.textContent=Math.round(1000/(n-lastMove))+" Hz";
+ }
+ lastMove=n;
+});
+
+setTimeout(()=>{
+ if(!det) poll.textContent="No input device detected";
+},2000);
+
+
+// TOUCH
+let lt=0;
+window.addEventListener("touchmove",e=>{
+ let n=performance.now();
+ if(lt){
+  touch.textContent=Math.round(1000/(n-lt))+" Hz";
+ }
+ lt=n;
+});
+
+
+// INPUT LAG
+window.addEventListener("click",()=>{
+ let s=performance.now();
+ requestAnimationFrame(()=>{
+  inputlag.textContent=(performance.now()-s).toFixed(2)+" ms";
+ });
+});
+
+
+// ---------------- PIXEL TESTS (unchanged logic) ----------------
+function spawn(el,speed,spacing){
+ setInterval(()=>{
+  let b=document.createElement("div");
+  b.className="bar";
+  el.appendChild(b);
+
+  let p=-60;
+  function m(){
+    p+=speed;
+    b.style.transform=`translateX(${p}px)`;
+    if(p<window.innerWidth) requestAnimationFrame(m);
+    else b.remove();
+  }
+  m();
+ },spacing);
+}
+
+spawn(pixel,15,140);
+spawn(variable,5,200);
+spawn(variable,20,200);
+spawn(overdrive,25,120);
+
+
+// ---------------- SHADER BENCHMARK ----------------
+let c=document.createElement("canvas");
+let gl=c.getContext("webgl");
+
+let s=performance.now(),f2=0;
+
+function shader(){
+ if(gl){
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  f2++;
+ }
+
+ if(performance.now()-s<3000){
+  requestAnimationFrame(shader);
+ } else {
+  shaderScore.textContent="Score: "+f2;
+ }
+}
+shader();
+
+
+// ---------------- CPU MULTITHREAD ----------------
+function workerTask(){
+ let blob = new Blob([`
+  onmessage = function(){
+    let x=0;
+    for(let i=0;i<5e7;i++){ x+=Math.sqrt(i); }
+    postMessage(x);
+  }
+ `],{type:"application/javascript"});
+
+ let url=URL.createObjectURL(blob);
+ let w=new Worker(url);
+
+ let start=performance.now();
+ w.postMessage(0);
+
+ w.onmessage=function(){
+  let t=performance.now()-start;
+  cpuScore.textContent = "Time: "+t.toFixed(0)+" ms (1 thread)";
+ };
+}
+workerTask();
+
+
+// ---------------- WEBGPU ----------------
+async function webgpuTest(){
+ try{
+  if(!navigator.gpu){
+    webgpu.textContent="Not supported";
+    return;
+  }
+
+  const adapter = await navigator.gpu.requestAdapter();
+  if(!adapter){
+    webgpu.textContent="No adapter";
+    return;
+  }
+
+  webgpu.textContent="Supported (WebGPU available)";
+ } catch(e){
+  webgpu.textContent="Error";
+ }
+}
+webgpuTest();
+
+
+// ---------------- DEVICE PARSER ----------------
+ua.textContent = navigator.userAgent;
+platform.textContent = navigator.platform;
+
+let cores = navigator.hardwareConcurrency || "unknown";
+threads.textContent = cores;
+
+function classify(){
+ let ua = navigator.userAgent;
+
+ if(/iPhone|iPad/.test(ua)) return "iOS Device";
+ if(/Android/.test(ua)) return "Android Device";
+ if(/Windows/.test(ua)) return "Windows Device";
+ if(/Mac/.test(ua)) return "macOS Device";
+ return "Unknown";
+}
+
+deviceClass.textContent = classify();
+
+
+// ---------------- SCORE ----------------
+let score=0;
+score += screen.width;
+score += screen.height;
+score += navigator.hardwareConcurrency || 0;
+score += window.devicePixelRatio*100;
+
+fingerprint.textContent="Score: "+Math.round(score);
+
+</script>
+</body>
+</html>
