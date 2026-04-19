@@ -3,174 +3,255 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>GPU / CPU Benchmark</title>
+<title>GPU / CPU Benchmark Extreme</title>
 
 <style>
-    body {
-        margin: 0;
-        background: #000;
-        color: #fff;
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-        overflow: hidden;
-    }
+body {
+    margin: 0;
+    background: #000;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    overflow: hidden;
+}
 
-    #ui {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        z-index: 10;
-    }
+#ui {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+}
 
-    h1 {
-        font-weight: 600;
-        font-size: 18px;
-        letter-spacing: 1px;
-        opacity: 0.9;
-    }
+h1 {
+    font-size: 18px;
+    margin: 0;
+    opacity: 0.9;
+}
 
-    #fps {
-        margin-top: 10px;
-        font-size: 14px;
-        opacity: 0.8;
-    }
+#stats {
+    margin-top: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    opacity: 0.85;
+}
 
-    #hint {
-        margin-top: 6px;
-        font-size: 12px;
-        opacity: 0.5;
-    }
+#score {
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: 600;
+}
 </style>
 </head>
 
 <body>
 
 <div id="ui">
-    <h1>GPU / CPU Benchmark</h1>
-    <div id="fps">FPS: ...</div>
-    <div id="hint">WebGL stress test scene</div>
+    <h1>GPU / CPU Benchmark Extreme</h1>
+    <div id="stats">Initializing...</div>
+    <div id="score"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 <script>
 
-// ======================
+// =========================
 // CONFIG
-// ======================
-const CUBE_COUNT = 25000;
+// =========================
+const MAX_INSTANCES = 1000000; // <<< Ziel: 1 Million
 
-// ======================
-// GLOBALS
-// ======================
+const levels = [
+    5000,
+    15000,
+    40000,
+    80000,
+    150000,
+    300000,
+    600000,
+    1000000
+];
+
+// =========================
 let scene, camera, renderer;
-let cubes = [];
+let mesh, material;
+let dummy = new THREE.Object3D();
 
-let fpsEl = document.getElementById("fps");
+let statsEl = document.getElementById("stats");
+let scoreEl = document.getElementById("score");
 
-let lastTime = performance.now();
-let frames = 0;
-let fps = 0;
+let levelIndex = 0;
+let INSTANCE_COUNT = levels[levelIndex];
 
+let frameTimes = [];
+let finished = false;
+
+let levelStart = performance.now();
+
+let finalScore = 0;
+
+// =========================
 init();
 animate();
 
+// =========================
 function init() {
 
     scene = new THREE.Scene();
 
     camera = new THREE.PerspectiveCamera(
-        75,
+        70,
         window.innerWidth / window.innerHeight,
         0.1,
-        2000
+        3000
     );
 
-    camera.position.z = 120;
+    camera.position.z = 180;
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
 
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
     document.body.appendChild(renderer.domElement);
 
-    // LIGHT SETUP
-    const light = new THREE.DirectionalLight(0xffffff, 2.5);
-    light.position.set(100, 150, 100);
-    light.castShadow = true;
+    scene.add(new THREE.AmbientLight(0x111111));
+
+    const light = new THREE.DirectionalLight(0xffffff, 1.5);
+    light.position.set(120, 160, 100);
     scene.add(light);
 
-    const ambient = new THREE.AmbientLight(0x111111);
-    scene.add(ambient);
-
-    // GEOMETRY
-    const geometry = new THREE.BoxGeometry(2, 2, 2);
-
-    const baseMaterial = new THREE.MeshStandardMaterial({
-        color: 0xffffff,
-        roughness: 0.85,
-        metalness: 0.05
-    });
-
-    // CREATE CUBES
-    for (let i = 0; i < CUBE_COUNT; i++) {
-
-        const material = baseMaterial.clone();
-
-        // deutlich dunklerer Bereich
-        const shade = 0.02 + Math.random() * 0.25;
-        material.color.setRGB(shade, shade, shade);
-
-        const cube = new THREE.Mesh(geometry, material);
-
-        cube.position.x = (Math.random() - 0.5) * 200;
-        cube.position.y = (Math.random() - 0.5) * 200;
-        cube.position.z = (Math.random() - 0.5) * 200;
-
-        cube.castShadow = true;
-        cube.receiveShadow = true;
-
-        scene.add(cube);
-        cubes.push(cube);
-    }
+    buildLevel(INSTANCE_COUNT);
 
     window.addEventListener("resize", onResize);
 }
 
+// =========================
+function buildLevel(count) {
+
+    if (mesh) scene.remove(mesh);
+
+    const geometry = new THREE.BoxGeometry(1.4, 1.4, 1.4);
+
+    material = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        roughness: 0.95,
+        metalness: 0.05
+    });
+
+    mesh = new THREE.InstancedMesh(geometry, material, count);
+
+    for (let i = 0; i < count; i++) {
+
+        // dunkler Look
+        const shade = 0.01 + Math.random() * 0.2;
+        material.color.setRGB(shade, shade, shade);
+
+        dummy.position.set(
+            (Math.random() - 0.5) * 300,
+            (Math.random() - 0.5) * 300,
+            (Math.random() - 0.5) * 300
+        );
+
+        dummy.rotation.set(
+            Math.random() * Math.PI,
+            Math.random() * Math.PI,
+            0
+        );
+
+        dummy.scale.setScalar(0.5 + Math.random() * 0.7);
+
+        dummy.updateMatrix();
+        mesh.setMatrixAt(i, dummy.matrix);
+    }
+
+    scene.add(mesh);
+
+    frameTimes = [];
+    levelStart = performance.now();
+}
+
+// =========================
+function animate() {
+
+    requestAnimationFrame(animate);
+
+    if (finished) return;
+
+    const now = performance.now();
+
+    frameTimes.push(now);
+    if (frameTimes.length > 120) frameTimes.shift();
+
+    mesh.rotation.y += 0.002;
+
+    renderer.render(scene, camera);
+
+    updateStats(now);
+}
+
+// =========================
+function updateStats(now) {
+
+    if (frameTimes.length < 2) return;
+
+    let deltas = [];
+    for (let i = 1; i < frameTimes.length; i++) {
+        deltas.push(frameTimes[i] - frameTimes[i - 1]);
+    }
+
+    let min = Math.min(...deltas);
+    let max = Math.max(...deltas);
+    let avg = deltas.reduce((a,b)=>a+b,0) / deltas.length;
+
+    let fps = 1000 / avg;
+
+    statsEl.innerHTML =
+        `Instances: ${INSTANCE_COUNT}<br>` +
+        `FPS: ${fps.toFixed(1)}<br>` +
+        `AVG: ${avg.toFixed(2)} ms<br>` +
+        `MIN: ${min.toFixed(2)} ms | MAX: ${max.toFixed(2)} ms<br>` +
+        `Level: ${levelIndex + 1} / ${levels.length}`;
+
+    // LEVEL PROGRESSION
+    if (now - levelStart > 5000) {
+        nextLevel(avg);
+    }
+}
+
+// =========================
+function nextLevel(avgFrameTime) {
+
+    // stabile Score-Komponente pro Level
+    let levelScore = (1000 / avgFrameTime) * (INSTANCE_COUNT / 10000);
+    finalScore += levelScore;
+
+    levelIndex++;
+
+    if (levelIndex >= levels.length) {
+        finishBenchmark();
+        return;
+    }
+
+    INSTANCE_COUNT = levels[levelIndex];
+    buildLevel(INSTANCE_COUNT);
+}
+
+// =========================
+function finishBenchmark() {
+
+    finished = true;
+
+    scene.remove(mesh);
+
+    statsEl.innerHTML = "Benchmark complete";
+
+    // FINAL SCORE WIRD EINMAL FIX AUSGEGEBEN
+    scoreEl.innerHTML = "FINAL SCORE: " + Math.round(finalScore);
+}
+
+// =========================
 function onResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-}
-
-// ======================
-// LOOP
-// ======================
-function animate() {
-    requestAnimationFrame(animate);
-
-    for (let i = 0; i < cubes.length; i++) {
-        cubes[i].rotation.x += 0.002;
-        cubes[i].rotation.y += 0.003;
-    }
-
-    camera.position.x = Math.sin(performance.now() * 0.0002) * 80;
-    camera.lookAt(0, 0, 0);
-
-    renderer.render(scene, camera);
-
-    // FPS
-    frames++;
-    let now = performance.now();
-
-    if (now - lastTime >= 1000) {
-        fps = frames;
-        frames = 0;
-        lastTime = now;
-        fpsEl.innerText = "FPS: " + fps;
-    }
 }
 
 </script>
