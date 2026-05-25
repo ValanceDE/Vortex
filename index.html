@@ -1,70 +1,314 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>P2P Chat</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P2P Global Chat</title>
 
 <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
 
 <style>
-body {
-    font-family: sans-serif;
-    margin: 20px;
+*{
+    box-sizing:border-box;
 }
 
-#messages {
-    border: 1px solid #ccc;
-    height: 300px;
-    overflow-y: auto;
-    padding: 10px;
-    margin-bottom: 10px;
+body{
+    margin:0;
+    background:#0f1115;
+    color:white;
+    font-family:system-ui,sans-serif;
+    display:flex;
+    flex-direction:column;
+    height:100vh;
 }
 
-input {
-    width: 80%;
-    padding: 10px;
+header{
+    padding:15px;
+    background:#171a21;
+    border-bottom:1px solid #2b2f3a;
 }
 
-button {
-    padding: 10px;
+#top{
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+
+#room{
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:#232834;
+    color:white;
+}
+
+#online{
+    margin-left:auto;
+    opacity:.7;
+}
+
+#messages{
+    flex:1;
+    overflow:auto;
+    padding:15px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.msg{
+    background:#1b2029;
+    padding:10px;
+    border-radius:14px;
+    max-width:80%;
+    word-wrap:break-word;
+}
+
+.name{
+    font-weight:bold;
+    margin-bottom:4px;
+    color:#67b3ff;
+}
+
+.time{
+    margin-top:5px;
+    font-size:12px;
+    opacity:.5;
+}
+
+#bottom{
+    display:flex;
+    gap:10px;
+    padding:15px;
+    background:#171a21;
+    border-top:1px solid #2b2f3a;
+}
+
+#input{
+    flex:1;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:#232834;
+    color:white;
+}
+
+button{
+    border:none;
+    border-radius:12px;
+    padding:14px 20px;
+    background:#3b82f6;
+    color:white;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:.9;
 }
 </style>
 </head>
+
 <body>
 
-<h2>Live Chat</h2>
+<header>
+    <div id="top">
+        <div>
+            <strong>P2P Chat</strong>
+        </div>
+
+        <input id="room"
+               value="global"
+               placeholder="Raum">
+
+        <button onclick="switchRoom()">
+            Raum wechseln
+        </button>
+
+        <div id="online">
+            Online: ...
+        </div>
+    </div>
+</header>
 
 <div id="messages"></div>
 
-<input id="input" placeholder="Nachricht">
-<button onclick="send()">Senden</button>
+<div id="bottom">
+    <input id="input"
+           placeholder="Nachricht schreiben...">
+
+    <button onclick="send()">
+        Senden
+    </button>
+</div>
 
 <script>
-const gun = Gun([
-    'https://gun-manhattan.herokuapp.com/gun'
-]);
-
-const chat = gun.get('global-chat');
-
-chat.map().on((data, id) => {
-    if (!data || !data.text) return;
-
-    const div = document.createElement('div');
-    div.textContent = data.text;
-
-    document.getElementById('messages').appendChild(div);
+const gun = Gun({
+    peers:[
+        "https://peer.wallie.io/gun",
+        "https://gun-manhattan.herokuapp.com/gun"
+    ]
 });
 
-function send() {
-    const text = document.getElementById('input').value;
+let username =
+    localStorage.getItem("username");
+
+if(!username){
+
+    username =
+        "User-" +
+        Math.floor(Math.random()*9999);
+
+    localStorage.setItem(
+        "username",
+        username
+    );
+}
+
+let currentRoom = "global";
+let chat;
+let shown = new Set();
+
+const onlineNode =
+    gun.get("online-users");
+
+function switchRoom(){
+
+    currentRoom =
+        document.getElementById("room")
+        .value.trim() || "global";
+
+    shown.clear();
+
+    document.getElementById(
+        "messages"
+    ).innerHTML = "";
+
+    loadRoom();
+}
+
+function loadRoom(){
+
+    chat =
+        gun.get("rooms")
+           .get(currentRoom);
+
+    chat.map().on((msg,id)=>{
+
+        if(!msg) return;
+        if(!msg.text) return;
+        if(shown.has(id)) return;
+
+        shown.add(id);
+
+        addMessage(msg);
+    });
+}
+
+function addMessage(msg){
+
+    const div =
+        document.createElement("div");
+
+    div.className = "msg";
+
+    const time =
+        new Date(msg.time)
+        .toLocaleTimeString();
+
+    div.innerHTML = `
+        <div class="name">
+            ${escapeHtml(msg.user)}
+        </div>
+
+        <div>
+            ${escapeHtml(msg.text)}
+        </div>
+
+        <div class="time">
+            ${time}
+        </div>
+    `;
+
+    const box =
+        document.getElementById(
+            "messages"
+        );
+
+    box.appendChild(div);
+
+    box.scrollTop =
+        box.scrollHeight;
+}
+
+function send(){
+
+    const input =
+        document.getElementById(
+            "input"
+        );
+
+    const text =
+        input.value.trim();
+
+    if(!text) return;
 
     chat.set({
-        text: text,
-        time: Date.now()
+        user:username,
+        text:text,
+        time:Date.now()
     });
 
-    document.getElementById('input').value = '';
+    input.value = "";
 }
+
+function escapeHtml(text){
+
+    const div =
+        document.createElement("div");
+
+    div.innerText = text;
+
+    return div.innerHTML;
+}
+
+document
+.getElementById("input")
+.addEventListener("keydown",e=>{
+
+    if(e.key==="Enter"){
+        send();
+    }
+});
+
+setInterval(()=>{
+
+    onlineNode.get(username).put({
+        time:Date.now()
+    });
+
+},3000);
+
+setInterval(()=>{
+
+    let count = 0;
+
+    onlineNode.map().once(user=>{
+
+        if(!user) return;
+
+        if(Date.now()-user.time < 10000){
+            count++;
+        }
+
+        document.getElementById(
+            "online"
+        ).textContent =
+            "Online: " + count;
+    });
+
+},4000);
+
+loadRoom();
 </script>
 
 </body>
