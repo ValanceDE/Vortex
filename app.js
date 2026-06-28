@@ -1,39 +1,34 @@
 const input = document.getElementById("romInput");
-const fileName = document.getElementById("fileName");
 
 input.addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file) return;
 
-  fileName.innerText = file.name;
-
   const url = URL.createObjectURL(file);
 
-  launchVortex(url);
+  startGame(url);
 });
 
-function launchVortex(gameUrl) {
+function startGame(gameUrl) {
 
   // hide menu
   document.getElementById("menu").style.display = "none";
 
-  // show emulator fullscreen
+  // show emulator
   document.getElementById("emulatorScreen").classList.remove("hidden");
 
-  // EmulatorJS config
-  EJS_player = "#game";
-  EJS_core = "gba";
-  EJS_gameUrl = gameUrl;
-  EJS_pathtodata = "https://cdn.emulatorjs.org/latest/data/";
+  // IMPORTANT: set config FIRST
+  window.EJS_player = "#game";
+  window.EJS_core = "gba";
+  window.EJS_gameUrl = gameUrl;
+  window.EJS_pathtodata = "https://cdn.emulatorjs.org/latest/data/";
 
-  // load once
-  if (!window.__vortex_loaded) {
-    window.__vortex_loaded = true;
+  // load emulator ONLY ONCE, and ONLY NOW config is ready
+  if (!window.__ejs_loaded) {
+    window.__ejs_loaded = true;
 
     const script = document.createElement("script");
     script.src = "https://cdn.emulatorjs.org/latest/data/loader.js";
     document.body.appendChild(script);
-  } else {
-    location.reload();
   }
 }
