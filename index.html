@@ -1,33 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Vortex Emulator</title>
 
-<title>Vortex</title>
-
-<link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css">
-
-<meta name="theme-color" content="#070812">
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-<div id="menu" class="menu">
-  <h1>Vortex</h1>
-  <p>Select a GBA ROM</p>
+  <!-- HOME / SELECTION UI -->
+  <div id="home" class="screen active">
+    <div class="glass-card">
+      <h1 class="title">Vortex</h1>
+      <p class="subtitle">Select a system</p>
 
-  <input id="romInput" type="file" accept=".gba,.gb,.gbc" />
+      <div class="grid">
+        <button class="btn" onclick="selectSystem('gba')">GBA</button>
+        <button class="btn" onclick="selectSystem('n64')">N64</button>
+        <button class="btn" onclick="selectSystem('3ds')">3DS</button>
+      </div>
+    </div>
+  </div>
 
-</div>
+  <!-- ROM SELECT UI -->
+  <div id="rom" class="screen">
+    <div class="glass-card">
+      <h2 id="systemTitle">System</h2>
 
-<!-- FULLSCREEN EMULATOR -->
-<div id="emulatorScreen" class="emulator-screen hidden">
-  <div id="game"></div>
-</div>
+      <input id="fileInput" type="file" class="file" />
 
-<script src="app.js"></script>
+      <button class="btn primary" onclick="startGame()">Start Game</button>
+      <button class="btn ghost" onclick="backHome()">Back</button>
+    </div>
+  </div>
 
+  <!-- EMULATOR VIEW -->
+  <div id="emulator" class="screen emulator">
+    <div id="game"></div>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
