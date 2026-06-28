@@ -6,14 +6,13 @@
 }
 
 body {
-  background: radial-gradient(circle at top, #1b1b2f, #0a0a12);
-  height: 100vh;
+  background: radial-gradient(circle at top, #0f1020, #05060a);
   overflow: hidden;
-  color: white;
+  height: 100vh;
 }
 
-/* screens */
-.screen {
+/* views */
+.view {
   position: absolute;
   inset: 0;
   display: none;
@@ -21,74 +20,70 @@ body {
   justify-content: center;
 }
 
-.screen.active {
+.view.active {
   display: flex;
 }
 
-/* glass UI */
-.glass-card {
-  width: 90%;
-  max-width: 420px;
-  padding: 24px;
-  border-radius: 20px;
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+/* glass card */
+.glass {
+  width: min(420px, 90vw);
+  padding: 28px;
+  border-radius: 24px;
+
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+
+  box-shadow:
+    0 20px 80px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+
   text-align: center;
 }
 
-.title {
-  font-size: 42px;
+/* logo */
+.logo {
+  font-size: 44px;
   font-weight: 700;
+  letter-spacing: 1px;
+  background: linear-gradient(90deg,#7c5cff,#00d4ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.subtitle {
-  opacity: 0.7;
-  margin-top: 8px;
-  margin-bottom: 20px;
-}
-
-.grid {
-  display: grid;
-  gap: 12px;
+.sub {
+  opacity: 0.6;
+  margin: 8px 0 20px;
 }
 
 /* buttons */
-.btn {
+.menu button,
+button {
+  width: 100%;
+  margin-top: 10px;
   padding: 14px;
   border-radius: 14px;
   border: none;
-  background: rgba(255,255,255,0.1);
+
+  background: rgba(255,255,255,0.08);
   color: white;
-  font-size: 16px;
-  cursor: pointer;
+
+  font-size: 15px;
+
   transition: 0.2s;
 }
 
-.btn:hover {
+button:hover {
   transform: scale(1.03);
-  background: rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.15);
 }
 
-.btn.primary {
-  background: linear-gradient(135deg, #6a5cff, #00d4ff);
-}
-
-.btn.ghost {
-  margin-top: 10px;
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.2);
-}
-
-.file {
-  margin: 20px 0;
-  width: 100%;
-  color: white;
+.primary {
+  background: linear-gradient(135deg,#6a5cff,#00d4ff);
 }
 
 /* emulator fullscreen */
-.emulator {
+.emu {
   background: black;
 }
 
