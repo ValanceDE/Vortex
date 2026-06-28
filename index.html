@@ -1,49 +1,43 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>SpaceLauncher</title>
-
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#0a0a0f" />
-
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Retro Arcade</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+
   <div class="app">
 
     <header>
-      <h1>SpaceLauncher</h1>
-      <p>iOS Web Launcher</p>
+      <h1>Retro Arcade</h1>
+      <p>Play GBA games instantly</p>
     </header>
 
-    <section class="card">
-      <h2>Launcher</h2>
+    <main>
 
-      <input id="urlInput" placeholder="settings://, shortcuts://..." />
-      <button onclick="openURL()">Öffnen</button>
-    </section>
+      <div class="grid">
+        <button class="card" onclick="loadGame('game.gba')">
+          <h3>Game 1</h3>
+          <p>Click to play</p>
+        </button>
 
-    <section class="card">
-      <h2>Shortcuts</h2>
+        <button class="card" onclick="loadGame('game2.gba')">
+          <h3>Game 2</h3>
+          <p>Click to play</p>
+        </button>
+      </div>
 
-      <input id="shortcutName" placeholder="Shortcut Name" />
-      <input id="shortcutText" placeholder="Text/Input" />
+      <div id="emulator" class="emulator hidden"></div>
 
-      <button onclick="runShortcut()">Run Shortcut</button>
-    </section>
-
-    <section class="card">
-      <h2>Notifications</h2>
-
-      <button onclick="enableNotifications()">Aktivieren</button>
-      <button onclick="sendTestNotification()">Test senden</button>
-    </section>
+    </main>
 
   </div>
 
+  <!-- EmulatorJS -->
+  <script src="https://cdn.emulatorjs.org/latest/data/loader.js"></script>
   <script src="app.js"></script>
+
 </body>
 </html>
