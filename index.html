@@ -14,25 +14,11 @@
 
 <body>
 
-<div class="bg"></div>
-
-<!-- MENU / UPLOAD SCREEN -->
 <div id="menu" class="menu">
+  <h1>Vortex</h1>
+  <p>Select a GBA ROM</p>
 
-  <div class="header">
-    <h1>Vortex</h1>
-    <p>Load a GBA ROM to begin</p>
-  </div>
-
-  <div class="card">
-    <input id="romInput" type="file" accept=".gba,.gb,.gbc" hidden>
-
-    <button class="btn" onclick="document.getElementById('romInput').click()">
-      Select ROM
-    </button>
-
-    <div id="fileName" class="filename">No ROM selected</div>
-  </div>
+  <input id="romInput" type="file" accept=".gba,.gb,.gbc" />
 
 </div>
 
