@@ -1,8 +1,15 @@
 {
-  "name": "Retro Arcade",
-  "short_name": "Arcade",
+  "name": "Neo Retro Emulator",
+  "short_name": "NeoRetro",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#0b0f19",
-  "theme_color": "#0b0f19"
+  "background_color": "#070A12",
+  "theme_color": "#070A12",
+  "icons": [
+    {
+      "src": "assets/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
