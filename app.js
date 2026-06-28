@@ -7,29 +7,33 @@ input.addEventListener("change", async (e) => {
 
   fileName.innerText = file.name;
 
-  const blobURL = URL.createObjectURL(file);
+  const url = URL.createObjectURL(file);
 
-  startEmulator(blobURL);
+  launchVortex(url);
 });
 
-function startEmulator(gameUrl) {
-  document.getElementById("emuWrapper").classList.remove("hidden");
+function launchVortex(gameUrl) {
 
-  // IMPORTANT: EmulatorJS setup MUST match docs exactly
+  // hide menu
+  document.getElementById("menu").style.display = "none";
+
+  // show emulator fullscreen
+  document.getElementById("emulatorScreen").classList.remove("hidden");
+
+  // EmulatorJS config
   EJS_player = "#game";
-  EJS_core = "gba"; // or mgba
+  EJS_core = "gba";
   EJS_gameUrl = gameUrl;
   EJS_pathtodata = "https://cdn.emulatorjs.org/latest/data/";
 
-  // load emulator ONLY ONCE
-  if (!window._ejs_loaded) {
-    window._ejs_loaded = true;
+  // load once
+  if (!window.__vortex_loaded) {
+    window.__vortex_loaded = true;
 
     const script = document.createElement("script");
     script.src = "https://cdn.emulatorjs.org/latest/data/loader.js";
     document.body.appendChild(script);
   } else {
-    // reload workaround
     location.reload();
   }
 }
