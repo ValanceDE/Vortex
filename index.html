@@ -10,34 +10,20 @@
 
 <body>
 
-<!-- HOME -->
-<div id="home" class="view active">
-  <div class="glass">
+<!-- MENU -->
+<div id="menu" class="menu">
+  <div class="card">
     <div class="logo">Vortex</div>
-    <div class="sub">Select System</div>
+    <div class="sub">Select ROM</div>
 
-    <div class="menu">
-      <button onclick="select('gba')">Game Boy Advance</button>
-      <button onclick="select('n64')">Nintendo 64</button>
-      <button onclick="select('3ds')">Nintendo 3DS</button>
-    </div>
-  </div>
-</div>
+    <input id="romInput" type="file" />
 
-<!-- ROM -->
-<div id="rom" class="view">
-  <div class="glass">
-    <div class="title" id="title">Load ROM</div>
-
-    <input type="file" id="file" />
-
-    <button class="primary" onclick="launch()">Start</button>
-    <button onclick="back()">Back</button>
+    <div class="hint">Supported: GBA / N64 / 3DS ROM</div>
   </div>
 </div>
 
 <!-- EMULATOR -->
-<div id="emu" class="view emu">
+<div id="emulatorScreen" class="emulator hidden">
   <div id="game"></div>
 </div>
 
