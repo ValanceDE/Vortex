@@ -5,39 +5,52 @@
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-body {
-  background: radial-gradient(circle at top, #0b0c14, #05060a);
-  height: 100vh;
+html, body {
+  height: 100%;
+  width: 100%;
   overflow: hidden;
+  background: #05060a;
+}
+
+/* SAFE AREA FIX (iOS notch etc.) */
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* MENU */
 .menu {
   height: 100vh;
+  width: 100vw;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.card {
-  width: min(420px, 90vw);
+/* GLASS CARD */
+.glass {
+  width: min(420px, 92vw);
   padding: 28px;
-  border-radius: 26px;
+
+  border-radius: 28px;
 
   background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
 
   box-shadow:
-    0 30px 100px rgba(0,0,0,0.7),
+    0 40px 120px rgba(0,0,0,0.75),
     inset 0 1px 0 rgba(255,255,255,0.08);
 
   text-align: center;
+
+  /* IMPORTANT FIX: prevents overflow visual bugs */
+  overflow: hidden;
 }
 
 .logo {
   font-size: 44px;
-  font-weight: 700;
+  font-weight: 800;
   background: linear-gradient(90deg,#7c5cff,#00d4ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -48,25 +61,50 @@ body {
   margin-bottom: 18px;
 }
 
+/* GRID BUTTONS */
+.grid {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+button {
+  padding: 14px;
+  border-radius: 16px;
+  border: none;
+
+  background: rgba(255,255,255,0.08);
+  color: white;
+
+  font-size: 15px;
+
+  transition: 0.15s ease;
+}
+
+button:hover {
+  transform: scale(1.02);
+  background: rgba(255,255,255,0.14);
+}
+
+/* INPUT FIX */
 input {
   width: 100%;
-  padding: 14px;
+  padding: 12px;
   border-radius: 14px;
-  background: rgba(255,255,255,0.08);
+
   border: none;
+  background: rgba(255,255,255,0.08);
   color: white;
+
+  outline: none;
 }
 
-.hint {
-  margin-top: 12px;
-  font-size: 12px;
-  opacity: 0.5;
-}
-
-/* EMULATOR */
+/* EMULATOR FULLSCREEN FIX */
 .emulator {
   position: fixed;
   inset: 0;
+  width: 100vw;
+  height: 100vh;
   background: black;
 }
 
