@@ -1,56 +1,50 @@
-let selectedSystem = null;
-let selectedFile = null;
+let system = null;
+let file = null;
 
-function selectSystem(sys) {
-  selectedSystem = sys;
+function select(s) {
+  system = s;
 
   document.getElementById("home").classList.remove("active");
   document.getElementById("rom").classList.add("active");
 
-  document.getElementById("systemTitle").innerText =
-    "Load ROM (" + sys.toUpperCase() + ")";
+  document.getElementById("title").innerText =
+    "Load ROM: " + s.toUpperCase();
 }
 
-function backHome() {
+function back() {
   document.getElementById("rom").classList.remove("active");
   document.getElementById("home").classList.add("active");
 }
 
-document.getElementById("fileInput").addEventListener("change", (e) => {
-  selectedFile = e.target.files[0];
+document.getElementById("file").addEventListener("change", (e) => {
+  file = e.target.files[0];
 });
 
-function startGame() {
-  if (!selectedSystem || !selectedFile) {
-    alert("Bitte System und ROM wählen!");
-    return;
-  }
+function launch() {
+  if (!system || !file) return alert("Select system + ROM");
 
-  const url = URL.createObjectURL(selectedFile);
+  const url = URL.createObjectURL(file);
 
-  // EmulatorJS config
+  // CLEAR OLD EMULATOR
+  document.getElementById("game").innerHTML = "";
+
+  // EmulatorJS config (IMPORTANT ORDER)
   window.EJS_player = "#game";
   window.EJS_gameUrl = url;
   window.EJS_pathtodata = "data/";
 
-  if (selectedSystem === "gba") {
-    window.EJS_core = "gba";
-  }
-
-  if (selectedSystem === "n64") {
-    window.EJS_core = "n64";
-  }
-
-  if (selectedSystem === "3ds") {
+  if (system === "gba") window.EJS_core = "gba";
+  if (system === "n64") window.EJS_core = "n64";
+  if (system === "3ds") {
     window.EJS_core = "3ds";
     window.EJS_threads = true;
   }
 
-  // switch screen
+  // switch view FIRST
   document.getElementById("rom").classList.remove("active");
-  document.getElementById("emulator").classList.add("active");
+  document.getElementById("emu").classList.add("active");
 
-  // load emulator dynamically
+  // LOAD EMULATOR (ONLY ONCE PER SESSION)
   const script = document.createElement("script");
   script.src = "data/loader.js";
   document.body.appendChild(script);
