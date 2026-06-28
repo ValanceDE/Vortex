@@ -2,46 +2,45 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>Vortex Emulator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Vortex</title>
 
-  <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-  <!-- HOME / SELECTION UI -->
-  <div id="home" class="screen active">
-    <div class="glass-card">
-      <h1 class="title">Vortex</h1>
-      <p class="subtitle">Select a system</p>
+<!-- HOME -->
+<div id="home" class="view active">
+  <div class="glass">
+    <div class="logo">Vortex</div>
+    <div class="sub">Select System</div>
 
-      <div class="grid">
-        <button class="btn" onclick="selectSystem('gba')">GBA</button>
-        <button class="btn" onclick="selectSystem('n64')">N64</button>
-        <button class="btn" onclick="selectSystem('3ds')">3DS</button>
-      </div>
+    <div class="menu">
+      <button onclick="select('gba')">Game Boy Advance</button>
+      <button onclick="select('n64')">Nintendo 64</button>
+      <button onclick="select('3ds')">Nintendo 3DS</button>
     </div>
   </div>
+</div>
 
-  <!-- ROM SELECT UI -->
-  <div id="rom" class="screen">
-    <div class="glass-card">
-      <h2 id="systemTitle">System</h2>
+<!-- ROM -->
+<div id="rom" class="view">
+  <div class="glass">
+    <div class="title" id="title">Load ROM</div>
 
-      <input id="fileInput" type="file" class="file" />
+    <input type="file" id="file" />
 
-      <button class="btn primary" onclick="startGame()">Start Game</button>
-      <button class="btn ghost" onclick="backHome()">Back</button>
-    </div>
+    <button class="primary" onclick="launch()">Start</button>
+    <button onclick="back()">Back</button>
   </div>
+</div>
 
-  <!-- EMULATOR VIEW -->
-  <div id="emulator" class="screen emulator">
-    <div id="game"></div>
-  </div>
+<!-- EMULATOR -->
+<div id="emu" class="view emu">
+  <div id="game"></div>
+</div>
 
-  <script src="app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
