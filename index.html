@@ -10,15 +10,19 @@
 
 <body>
 
-<!-- MENU -->
+<!-- SYSTEM MENU -->
 <div id="menu" class="menu">
-  <div class="card">
+  <div class="glass">
     <div class="logo">Vortex</div>
-    <div class="sub">Select ROM</div>
+    <div class="sub">Choose System</div>
+
+    <div class="grid">
+      <button onclick="selectSystem('gba')">Game Boy Advance</button>
+      <button onclick="selectSystem('n64')">Nintendo 64</button>
+      <button onclick="selectSystem('3ds')">Nintendo 3DS</button>
+    </div>
 
     <input id="romInput" type="file" />
-
-    <div class="hint">Supported: GBA / N64 / 3DS ROM</div>
   </div>
 </div>
 
