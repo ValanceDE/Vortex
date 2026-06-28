@@ -1,13 +1,13 @@
 {
-  "name": "Neo Retro Emulator",
-  "short_name": "NeoRetro",
+  "name": "Nova Emulator",
+  "short_name": "Nova",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#070A12",
-  "theme_color": "#070A12",
+  "background_color": "#070812",
+  "theme_color": "#070812",
   "icons": [
     {
-      "src": "assets/icon.png",
+      "src": "icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
