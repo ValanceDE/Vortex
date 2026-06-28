@@ -4,42 +4,41 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<title>Nova Emulator</title>
+<title>Vortex</title>
 
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="style.css">
 
-<meta name="theme-color" content="#0a0a12">
+<meta name="theme-color" content="#070812">
 </head>
 
 <body>
 
 <div class="bg"></div>
 
-<div class="app">
+<!-- MENU / UPLOAD SCREEN -->
+<div id="menu" class="menu">
 
-  <!-- HEADER -->
-  <div class="top">
-    <h1>Nova</h1>
-    <p>GBA Emulator • Upload & Play instantly</p>
+  <div class="header">
+    <h1>Vortex</h1>
+    <p>Load a GBA ROM to begin</p>
   </div>
 
-  <!-- UPLOAD CARD -->
   <div class="card">
     <input id="romInput" type="file" accept=".gba,.gb,.gbc" hidden>
 
     <button class="btn" onclick="document.getElementById('romInput').click()">
-      Upload ROM
+      Select ROM
     </button>
 
-    <div id="fileName" class="filename">No file selected</div>
+    <div id="fileName" class="filename">No ROM selected</div>
   </div>
 
-  <!-- EMULATOR -->
-  <div id="emuWrapper" class="emu hidden">
-    <div id="game"></div>
-  </div>
+</div>
 
+<!-- FULLSCREEN EMULATOR -->
+<div id="emulatorScreen" class="emulator-screen hidden">
+  <div id="game"></div>
 </div>
 
 <script src="app.js"></script>
