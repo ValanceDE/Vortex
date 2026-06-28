@@ -6,46 +6,38 @@
 }
 
 body {
-  background: radial-gradient(circle at top, #0f1020, #05060a);
-  overflow: hidden;
+  background: radial-gradient(circle at top, #0b0c14, #05060a);
   height: 100vh;
+  overflow: hidden;
 }
 
-/* views */
-.view {
-  position: absolute;
-  inset: 0;
-  display: none;
+/* MENU */
+.menu {
+  height: 100vh;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.view.active {
-  display: flex;
-}
-
-/* glass card */
-.glass {
+.card {
   width: min(420px, 90vw);
   padding: 28px;
-  border-radius: 24px;
+  border-radius: 26px;
 
   background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
 
   box-shadow:
-    0 20px 80px rgba(0,0,0,0.6),
+    0 30px 100px rgba(0,0,0,0.7),
     inset 0 1px 0 rgba(255,255,255,0.08);
 
   text-align: center;
 }
 
-/* logo */
 .logo {
   font-size: 44px;
   font-weight: 700;
-  letter-spacing: 1px;
   background: linear-gradient(90deg,#7c5cff,#00d4ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -53,38 +45,33 @@ body {
 
 .sub {
   opacity: 0.6;
-  margin: 8px 0 20px;
+  margin-bottom: 18px;
 }
 
-/* buttons */
-.menu button,
-button {
+input {
   width: 100%;
-  margin-top: 10px;
   padding: 14px;
   border-radius: 14px;
-  border: none;
-
   background: rgba(255,255,255,0.08);
+  border: none;
   color: white;
-
-  font-size: 15px;
-
-  transition: 0.2s;
 }
 
-button:hover {
-  transform: scale(1.03);
-  background: rgba(255,255,255,0.15);
+.hint {
+  margin-top: 12px;
+  font-size: 12px;
+  opacity: 0.5;
 }
 
-.primary {
-  background: linear-gradient(135deg,#6a5cff,#00d4ff);
-}
-
-/* emulator fullscreen */
-.emu {
+/* EMULATOR */
+.emulator {
+  position: fixed;
+  inset: 0;
   background: black;
+}
+
+.hidden {
+  display: none;
 }
 
 #game {
