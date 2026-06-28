@@ -1,43 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Retro Arcade</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Neo Retro</title>
+
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+
+<meta name="theme-color" content="#0b0f1a">
 </head>
+
 <body>
 
-  <div class="app">
+<div class="bg"></div>
 
-    <header>
-      <h1>Retro Arcade</h1>
-      <p>Play GBA games instantly</p>
-    </header>
+<div class="container">
 
-    <main>
-
-      <div class="grid">
-        <button class="card" onclick="loadGame('game.gba')">
-          <h3>Game 1</h3>
-          <p>Click to play</p>
-        </button>
-
-        <button class="card" onclick="loadGame('game2.gba')">
-          <h3>Game 2</h3>
-          <p>Click to play</p>
-        </button>
-      </div>
-
-      <div id="emulator" class="emulator hidden"></div>
-
-    </main>
-
+  <div class="glass header">
+    <h1>Neo Retro</h1>
+    <p>Upload a ROM and play instantly</p>
   </div>
 
-  <!-- EmulatorJS -->
-  <script src="https://cdn.emulatorjs.org/latest/data/loader.js"></script>
-  <script src="app.js"></script>
+  <div class="glass upload-box">
+    <input type="file" id="romInput" accept=".gba,.gb,.gbc" hidden>
+    
+    <button class="btn glow" onclick="document.getElementById('romInput').click()">
+      📂 Choose ROM
+    </button>
+
+    <p id="fileName">No file selected</p>
+  </div>
+
+  <div id="emulator" class="emulator glass hidden"></div>
+
+</div>
+
+<script src="app.js"></script>
+<script src="https://cdn.emulatorjs.org/latest/data/loader.js"></script>
 
 </body>
 </html>
