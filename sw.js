@@ -1,3 +1,3 @@
 self.addEventListener("install", () => {
-  console.log("PWA installed");
+  console.log("Vortex PWA installed");
 });
