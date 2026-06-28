@@ -1,29 +1,46 @@
+let selectedSystem = null;
+
 const input = document.getElementById("romInput");
 
-input.addEventListener("change", async (e) => {
+function selectSystem(sys) {
+  selectedSystem = sys;
+  input.click();
+}
+
+input.addEventListener("change", (e) => {
   const file = e.target.files[0];
-  if (!file) return;
+  if (!file || !selectedSystem) return;
 
   const url = URL.createObjectURL(file);
-
   startGame(url);
 });
 
 function startGame(gameUrl) {
 
-  // hide menu
+  // hide menu completely
   document.getElementById("menu").style.display = "none";
 
   // show emulator
   document.getElementById("emulatorScreen").classList.remove("hidden");
 
-  // IMPORTANT: set config FIRST (EXACT EmulatorJS FLOW)
+  // IMPORTANT: EmulatorJS config FIRST (as required)
   window.EJS_player = "#game";
-  window.EJS_core = "gba"; // default (can be extended later)
   window.EJS_gameUrl = gameUrl;
-
-  // FIXED: use official CDN (this is what actually works)
   window.EJS_pathtodata = "https://cdn.emulatorjs.org/latest/data/";
+
+  // SYSTEM CORE MAPPING (FIXED)
+  if (selectedSystem === "gba") {
+    window.EJS_core = "gba";
+  }
+
+  if (selectedSystem === "n64") {
+    window.EJS_core = "n64";
+  }
+
+  if (selectedSystem === "3ds") {
+    window.EJS_core = "3ds";
+    window.EJS_threads = true;
+  }
 
   // load emulator ONLY ONCE
   if (!window.__ejs_loaded) {
