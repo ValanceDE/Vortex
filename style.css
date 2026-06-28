@@ -3,45 +3,51 @@ body {
   font-family: system-ui, -apple-system, sans-serif;
   background: #070812;
   color: white;
+  overflow: hidden;
 }
 
-/* animated background */
+/* animated glow background */
 .bg {
   position: fixed;
   inset: 0;
   background:
     radial-gradient(circle at 20% 20%, #7c5cff33, transparent 40%),
-    radial-gradient(circle at 80% 80%, #00ffd533, transparent 40%);
+    radial-gradient(circle at 80% 80%, #00ffd533, transparent 40%),
+    radial-gradient(circle at 50% 50%, #ff00ff22, transparent 50%);
   filter: blur(90px);
   z-index: -1;
 }
 
-.app {
-  max-width: 520px;
-  margin: auto;
-  padding: 24px;
+/* MENU */
+.menu {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
 }
 
-/* top */
-.top h1 {
-  font-size: 42px;
+.header h1 {
+  font-size: 54px;
   margin: 0;
-  letter-spacing: -1px;
+  letter-spacing: -2px;
 }
 
-.top p {
+.header p {
   opacity: 0.6;
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 /* glass card */
 .card {
-  margin-top: 20px;
+  width: 260px;
   padding: 18px;
-  border-radius: 18px;
 
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 18px;
   backdrop-filter: blur(20px);
 }
 
@@ -55,34 +61,40 @@ body {
   color: white;
 
   background: linear-gradient(135deg, #7c5cff, #00ffd5);
-  cursor: pointer;
+  box-shadow: 0 0 25px rgba(124,92,255,0.3);
 
-  box-shadow: 0 10px 40px rgba(124,92,255,0.25);
+  cursor: pointer;
 }
 
 .btn:active {
   transform: scale(0.98);
 }
 
-/* filename */
 .filename {
   margin-top: 10px;
-  font-size: 13px;
+  font-size: 12px;
   opacity: 0.6;
 }
 
-/* emulator */
-.emu {
-  margin-top: 20px;
-  height: 520px;
-  border-radius: 18px;
-  overflow: hidden;
-
-  background: rgba(0,0,0,0.4);
-  border: 1px solid rgba(255,255,255,0.1);
-  backdrop-filter: blur(20px);
+/* EMULATOR FULLSCREEN */
+.emulator-screen {
+  position: fixed;
+  inset: 0;
+  background: black;
+  z-index: 999;
 }
 
+#game {
+  width: 100%;
+  height: 100%;
+}
+
+/* hidden helper */
 .hidden {
   display: none;
+}
+
+/* iOS safety */
+body {
+  overscroll-behavior: none;
 }
