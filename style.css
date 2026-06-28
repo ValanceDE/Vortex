@@ -1,21 +1,9 @@
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: system-ui, sans-serif;
   background: #070812;
   color: white;
   overflow: hidden;
-}
-
-/* animated glow background */
-.bg {
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(circle at 20% 20%, #7c5cff33, transparent 40%),
-    radial-gradient(circle at 80% 80%, #00ffd533, transparent 40%),
-    radial-gradient(circle at 50% 50%, #ff00ff22, transparent 50%);
-  filter: blur(90px);
-  z-index: -1;
 }
 
 /* MENU */
@@ -25,55 +13,12 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 20px;
-  text-align: center;
+  gap: 12px;
 }
 
-.header h1 {
-  font-size: 54px;
+.menu h1 {
+  font-size: 48px;
   margin: 0;
-  letter-spacing: -2px;
-}
-
-.header p {
-  opacity: 0.6;
-  margin-top: 8px;
-}
-
-/* glass card */
-.card {
-  width: 260px;
-  padding: 18px;
-
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 18px;
-  backdrop-filter: blur(20px);
-}
-
-/* button */
-.btn {
-  width: 100%;
-  padding: 14px;
-  border: none;
-  border-radius: 12px;
-  font-weight: 600;
-  color: white;
-
-  background: linear-gradient(135deg, #7c5cff, #00ffd5);
-  box-shadow: 0 0 25px rgba(124,92,255,0.3);
-
-  cursor: pointer;
-}
-
-.btn:active {
-  transform: scale(0.98);
-}
-
-.filename {
-  margin-top: 10px;
-  font-size: 12px;
-  opacity: 0.6;
 }
 
 /* EMULATOR FULLSCREEN */
@@ -89,12 +34,7 @@ body {
   height: 100%;
 }
 
-/* hidden helper */
+/* hidden */
 .hidden {
   display: none;
-}
-
-/* iOS safety */
-body {
-  overscroll-behavior: none;
 }
