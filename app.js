@@ -1,83 +1,40 @@
-/* =========================
-   STATE
-========================= */
-
 let selectedCore = null;
 let romUrl = null;
-let isLoaded = false;
+let emulatorLoaded = false;
 
-/* =========================
-   ELEMENTS
-========================= */
-
-const romInput = document.getElementById("romInput");
+const input = document.getElementById("romInput");
 const loading = document.getElementById("loading");
 
-/* =========================
-   SYSTEM SELECT
-========================= */
-
-document.querySelectorAll(".systemCard").forEach(btn => {
+/* SYSTEM SELECT */
+document.querySelectorAll(".card").forEach(btn => {
   btn.addEventListener("click", () => {
     selectedCore = btn.dataset.core;
-
-    // trigger file picker instantly
-    romInput.value = "";
-    romInput.click();
+    input.click();
   });
 });
 
-/* =========================
-   FILE PICKER
-========================= */
-
-romInput.addEventListener("change", (e) => {
+/* FILE SELECT */
+input.addEventListener("change", (e) => {
   const file = e.target.files[0];
-  if (!file || !selectedCore) return;
+  if (!file) return;
 
   romUrl = URL.createObjectURL(file);
 
-  launchEmulator();
+  start();
 });
 
-/* =========================
-   MAIN START FUNCTION
-========================= */
+/* START EMULATOR */
+function start() {
 
-function launchEmulator() {
-
-  // show loading
-  loading.classList.add("active");
-
-  // switch UI state
-  document.body.classList.add("emu-active");
+  if (!selectedCore || !romUrl) return;
 
   document.getElementById("home").style.display = "none";
   document.getElementById("emulator").style.display = "block";
-
-  // delay slightly for smooth UI (iOS feel)
-  setTimeout(() => {
-    initEmulator();
-  }, 250);
-}
-
-/* =========================
-   EMULATOR INIT (IMPORTANT)
-========================= */
-
-function initEmulator() {
-
-  // CLEAN GAME CONTAINER
-  const game = document.getElementById("game");
-  game.innerHTML = "";
-
-  /* IMPORTANT ORDER (EmulatorJS requirement) */
+  loading.style.display = "flex";
 
   window.EJS_player = "#game";
   window.EJS_gameUrl = romUrl;
   window.EJS_pathtodata = "https://cdn.emulatorjs.org/latest/data/";
-
-  /* CORE MAPPING */
 
   if (selectedCore === "gba") {
     window.EJS_core = "gba";
@@ -92,38 +49,22 @@ function initEmulator() {
     window.EJS_threads = true;
   }
 
-  /* LOAD EMULATOR ONLY ONCE */
+  if (!emulatorLoaded) {
+    emulatorLoaded = true;
 
-  if (!isLoaded) {
-    isLoaded = true;
+    const s = document.createElement("script");
+    s.src = "https://cdn.emulatorjs.org/latest/data/loader.js";
 
-    const script = document.createElement("script");
-    script.src = "https://cdn.emulatorjs.org/latest/data/loader.js";
-
-    script.onload = () => {
-      // hide loading after load
+    s.onload = () => {
       setTimeout(() => {
-        loading.classList.remove("active");
-      }, 600);
+        loading.style.display = "none";
+      }, 800);
     };
 
-    document.body.appendChild(script);
+    document.body.appendChild(s);
   } else {
-    // already loaded → just hide loading
     setTimeout(() => {
-      loading.classList.remove("active");
+      loading.style.display = "none";
     }, 400);
   }
-}
-
-/* =========================
-   OPTIONAL: BACK RESET (future use)
-========================= */
-
-function resetApp() {
-  location.reload();
-}
-
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./sw.js");
 }
