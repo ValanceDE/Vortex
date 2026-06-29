@@ -2,250 +2,53 @@
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1, viewport-fit=cover">
-
-<meta
-name="theme-color"
-content="#09090B">
-
-<meta
-name="apple-mobile-web-app-capable"
-content="yes">
-
-<meta
-name="apple-mobile-web-app-status-bar-style"
-content="black-translucent">
-
-<meta
-name="apple-mobile-web-app-title"
-content="Vortex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#05060a">
 
 <title>Vortex</title>
 
 <link rel="manifest" href="manifest.json">
-
 <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
 
-<!-- Animated Background -->
-
+<!-- BACKGROUND -->
 <div id="background">
-
-<div class="gradient one"></div>
-
-<div class="gradient two"></div>
-
-<div class="gradient three"></div>
-
-<div class="noise"></div>
-
+  <div class="gradient one"></div>
+  <div class="gradient two"></div>
+  <div class="gradient three"></div>
 </div>
 
-<!-- Home -->
-
+<!-- HOME -->
 <div id="home">
+  <div class="glass">
 
-<header>
+    <h1 class="logo">Vortex</h1>
+    <p class="sub">Select system</p>
 
-<div id="logo">
+    <button class="card" data-core="gba">Game Boy Advance</button>
+    <button class="card" data-core="n64">Nintendo 64</button>
+    <button class="card" data-core="3ds">Nintendo 3DS</button>
 
-<div id="logoGlow"></div>
-
-<h1>Vortex</h1>
-
-<p>
-Modern Emulator
-</p>
-
+  </div>
 </div>
 
-</header>
+<!-- FILE INPUT -->
+<input id="romInput" type="file" hidden>
 
-<main>
-
-<button
-class="systemCard"
-data-core="gba">
-
-<div class="systemLeft">
-
-<div class="systemIcon gba">
-
-<svg
-viewBox="0 0 24 24">
-
-<path
-d="M7 8h10a3 3 0 013 3v2a3 3 0 01-3 3H7a3 3 0 01-3-3v-2a3 3 0 013-3z"/>
-
-</svg>
-
-</div>
-
-<div>
-
-<h2>Game Boy Advance</h2>
-
-<span>mGBA Core</span>
-
-</div>
-
-</div>
-
-<div class="chevron">
-
-<svg
-viewBox="0 0 24 24">
-
-<path
-d="M9 6l6 6-6 6"/>
-
-</svg>
-
-</div>
-
-</button>
-
-<button
-class="systemCard"
-data-core="n64">
-
-<div class="systemLeft">
-
-<div class="systemIcon n64">
-
-<svg
-viewBox="0 0 24 24">
-
-<path
-d="M5 6h14v12H5z"/>
-
-</svg>
-
-</div>
-
-<div>
-
-<h2>Nintendo 64</h2>
-
-<span>Mupen64Plus</span>
-
-</div>
-
-</div>
-
-<div class="chevron">
-
-<svg
-viewBox="0 0 24 24">
-
-<path
-d="M9 6l6 6-6 6"/>
-
-</svg>
-
-</div>
-
-</button>
-
-<button
-class="systemCard"
-data-core="3ds">
-
-<div class="systemLeft">
-
-<div class="systemIcon ds">
-
-<svg
-viewBox="0 0 24 24">
-
-<path
-d="M8 3h8a2 2 0 012 2v14a2 2 0 01-2 2H8a2 2 0 01-2-2V5a2 2 0 012-2z"/>
-
-</svg>
-
-</div>
-
-<div>
-
-<h2>Nintendo 3DS</h2>
-
-<span>Azahar Core</span>
-
-</div>
-
-</div>
-
-<div class="chevron">
-
-<svg
-viewBox="0 0 24 24">
-
-<path
-d="M9 6l6 6-6 6"/>
-
-</svg>
-
-</div>
-
-</button>
-
-</main>
-
-<footer>
-
-<div id="footerText">
-
-Built with EmulatorJS
-
-</div>
-
-</footer>
-
-</div>
-
-<!-- Hidden File Picker -->
-
-<input
-id="romInput"
-type="file"
-hidden>
-
-<!-- Loading Overlay -->
-
+<!-- LOADING -->
 <div id="loading">
-
-<div class="loaderGlass">
-
-<div class="spinner"></div>
-
-<h3>Launching...</h3>
-
-<p>
-Preparing Emulator
-</p>
-
+  <div class="loader">Loading...</div>
 </div>
 
-</div>
-
-<!-- Emulator -->
-
+<!-- EMULATOR -->
 <div id="emulator">
-
-<div id="game"></div>
-
+  <div id="game"></div>
 </div>
 
 <script src="app.js"></script>
 
 </body>
-
 </html>
