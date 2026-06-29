@@ -123,3 +123,7 @@ function initEmulator() {
 function resetApp() {
   location.reload();
 }
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js");
+}
